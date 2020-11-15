@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <mata charset="utf-8">
-  <title>new|memoapp</title>
-</head>
-<body>
-  <h1>メモアプリ</h1>
-  <form>
-      <div class="form-items">
-        <div class="form-items_title">
-          <input type="text">
-        </div>
-        <div class="form-items_content">
-          <input type="text">
-        </div>
-      </div>
-      <div class="form-action">
-        <input type="submit" value="保存">
-      </div>
-    </form>
-</body>
-</html>
+
+<form method="post" action="/memo">
+  <div class="form-items">
+    <div class="form-items_title">
+      <input type="text" name="title">
+    </div>
+    <div class="form-items_content">
+      <input type="text" name="content">
+    </div>
+  </div>
+  <div class="form-action">
+    <input type="submit" value="保存">
+  </div>
+</form>

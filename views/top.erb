@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <mata charset="utf-8">
-  <title>top|memoapp</title>
-</head>
-<body>
-  <h1>メモアプリ</h1>
-  <a href="../memo">追加</a>
-  <ul>
-  <% @memo.each do |memo| %>
-    <li><a href="../"<%+ memo[0] %>><%= memo[1] %></a></li>
-  <% end %>
-  </ul>
-</body>
-</html>
+<a href="../memo">追加</a>
+<ul>
+<% @memo.each do |memo| %>
+  <li><a href="../"<%+ memo[0] %>><%= memo[1] %></a></li>
+<% end %>
+</ul>
