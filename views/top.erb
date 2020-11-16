@@ -1,6 +1,6 @@
 <a href="../memo">追加</a>
 <ul>
 <% @memo.each do |memo| %>
-  <li><a href="../"<%+ memo[0] %>><%= memo[1] %></a></li>
+  <li><a href="../memo/<%= memo[0] %>"><%= memo[1] %></a></li>
 <% end %>
 </ul>

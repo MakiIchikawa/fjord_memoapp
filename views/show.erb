@@ -1,0 +1,19 @@
+<div class="memo">
+  <div class="memo_title">
+    <p><%= @memo_title %></p>
+  </div>
+  <div class="memo_content">
+    <p><%= @memo_content %></p>
+  </div>
+</div>
+<form method="get" action="/edit/<%= @memo_id %>">
+  <div class="form-action">
+    <input type="submit" value="変更">
+  </div>
+</form>
+<form method="post" action="/memo/<%= @memo_id %>">
+  <div class="form-action">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="submit" value="削除">
+  </div>
+</form>
