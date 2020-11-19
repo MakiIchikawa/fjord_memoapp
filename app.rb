@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'readline'
+require 'csv'
 
 get '/' do
   redirect to('/top')
@@ -31,18 +32,18 @@ post '/memo' do
     max_number = number > max_number ? number : max_number
   end
   File.open("./memo/#{max_number + 1}.txt", 'w') do |f|
-    f.write("#{params[:title]},#{params[:content]}")
+    f.print("#{params[:title]},#{params[:content]}")
   end
   p '保存しました'
 end
 
 get '/memo/:id' do
   @memo_id = params[:id]
-  file = File.open("./memo/#{params[:id]}.txt", 'r')
-  file_content = file.readline.split(/,/)
-  @memo_title = file_content[0]
-  @memo_content = file_content[1]
+  file = File.open("./memo/#{params[:id]}.txt")
+  p file_content = file.read.split(/,/)
   file.close
+  @memo_title = file_content[0]
+  @memo_content = file_content[1].gsub(/\R/, '<br>')
   erb :show
 end
 
@@ -53,11 +54,10 @@ end
 
 get '/edit/:id' do
   @memo_id = params[:id]
-  file = File.open("./memo/#{params[:id]}.txt", 'r')
-  file_content = file.readline.split(/,/)
+  file = File.read("./memo/#{params[:id]}.txt")
+  p file_content = file.split(/,/)
   @memo_title = file_content[0]
-  @memo_content = file_content[1]
-  file.close
+  p @memo_content = file_content[1].gsub(/\R/, '&#13;')
   erb :edit
 end
 

@@ -1,14 +1,15 @@
-
 <form method="post" action="/memo">
-  <div class="form-items">
+  <div class="container">
     <div class="form-items_title">
-      <input type="text" name="title">
+      <input type="text" name="title" class="form-control">
     </div>
     <div class="form-items_content">
-      <input type="text" name="content">
+      <textarea name="content" class="form-control"></textarea>
     </div>
-  </div>
-  <div class="form-action">
-    <input type="submit" value="保存">
+    <div class="form-action form-row text-center">
+      <div class="col-12">
+        <input class="btn-outline-info btn-lg" type="submit" value="保存">
+      </div>
+    </div>
   </div>
 </form>
