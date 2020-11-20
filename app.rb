@@ -65,5 +65,5 @@ patch '/memo/:id' do
   File.open("./memo/#{params[:id]}.txt", 'w') do |f|
     f.print("\"#{params[:title]}\",\"#{params[:content]}\"")
   end
-  p '変更しました。'
+  p '変更しました'
 end
