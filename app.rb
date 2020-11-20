@@ -13,8 +13,8 @@ get '/top' do
   memo = []
   Dir.children('./memo').sort.each do |f|
     file = File.open("./memo/#{f}", 'r')
-    file_content = file.readline.split(/,/)
-    memo.push([File.basename(f, '.*'), file_content[0]])
+    file_content = file.readline.split(/(",")/)
+    memo.push([File.basename(f, '.*'), file_content[0].gsub(/^"/, '')])
     file.close
   end
   @memo = memo
@@ -32,7 +32,7 @@ post '/memo' do
     max_number = number > max_number ? number : max_number
   end
   File.open("./memo/#{max_number + 1}.txt", 'w') do |f|
-    f.print("#{params[:title]},#{params[:content]}")
+    f.print("\"#{params[:title]}\",\"#{params[:content]}\"")
   end
   p '保存しました'
 end
@@ -40,10 +40,10 @@ end
 get '/memo/:id' do
   @memo_id = params[:id]
   file = File.open("./memo/#{params[:id]}.txt")
-  p file_content = file.read.split(/,/)
+  p file_content = file.read.split(/(",")/)
   file.close
-  @memo_title = file_content[0]
-  @memo_content = file_content[1].gsub(/\R/, '<br>')
+  @memo_title = file_content[0].gsub(/^"/, '')
+  @memo_content = file_content[2].gsub(/"$/, '').gsub(/\R/, '<br>')
   erb :show
 end
 
@@ -55,15 +55,15 @@ end
 get '/edit/:id' do
   @memo_id = params[:id]
   file = File.read("./memo/#{params[:id]}.txt")
-  p file_content = file.split(/,/)
-  @memo_title = file_content[0]
-  p @memo_content = file_content[1].gsub(/\R/, '&#13;')
+  file_content = file.split(/(",")/)
+  @memo_title = file_content[0].gsub(/^"/, '')
+  @memo_content = file_content[2].gsub(/"$/, '').gsub(/\R/, '&#13;')
   erb :edit
 end
 
 patch '/memo/:id' do
-  file = File.open("./memo/#{params[:id]}.txt", 'w')
-  file.write("#{params[:title]},#{params[:content]}")
-  file.close
+  File.open("./memo/#{params[:id]}.txt", 'w') do |f|
+    f.print("\"#{params[:title]}\",\"#{params[:content]}\"")
+  end
   p '変更しました。'
 end
