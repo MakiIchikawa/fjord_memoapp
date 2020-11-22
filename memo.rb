@@ -31,6 +31,10 @@ class Memo
     end
   end
 
+  def delete
+    File.delete("./memo/#{@id}.txt")
+  end
+
   def self.read_all
     memo_all = []
     Dir.children('./memo').sort.each do |child|
