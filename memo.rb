@@ -1,48 +1,63 @@
 # frozen_string_literal: true
 
+require 'pg'
 # Class that handles memo information
 class Memo
+  @connection = PG.connect(host: 'localhost',
+                           user: 'ichikawa',
+                           password: 'ichikawa',
+                           dbname: 'memoapp',
+                           port: '5432')
   attr_reader :id
   def initialize(id = nil)
     if id
-      @id = id
+      @id = format('%04d', id)
     else
       max_number = 0
       Memo.read_all.each do |memo|
         max_number = memo[0].to_i > max_number ? memo[0].to_i : max_number
       end
-      @id = max_number + 1
+      @id = format('%04d', max_number + 1)
     end
+  end
+
+  def self.read_connection
+    Memo.instance_variable_get(:@connection)
   end
 
   def read
-    file = []
-    File.open("./memo/#{@id}.txt") do |f|
-      file = f.read.split(/(",")/)
-    end
-    title = file[0].gsub(/^"/, '')
-    content = file[2].gsub(/"$/, '')
-    [title, content]
+    sql = "SELECT title, content FROM Memo WHERE id='#{@id}';"
+    Memo.read_connection.exec(sql).values
   end
 
-  def write(title, content)
-    File.open("./memo/#{@id}.txt", 'w') do |f|
-      f.print("\"#{title}\",\"#{content.gsub(/\\r\\n?/, "\n")}\"")
-    end
+  def insert(title, content)
+    # shaped_content = content.gsub(/\\r\\n?/, "\n")
+    sql = "INSERT INTO Memo (id, title, content) VALUES ('#{@id}', '#{title}', '#{content}');"
+    Memo.read_connection.exec(sql)
+  end
+
+  def update(title, content)
+    # shaped_content = content.gsub(/\\r\\n?/, "\n")
+    sql = "UPDATE Memo SET title='#{title}', content='#{content}' WHERE id='#{@id}';"
+    Memo.read_connection.exec(sql)
   end
 
   def delete
-    File.delete("./memo/#{@id}.txt")
+    sql = "DELETE FROM Memo WHERE id='#{@id}';"
+    Memo.read_connection.exec(sql)
   end
 
   def self.read_all
-    memo_all = []
-    Dir.children('./memo').sort.each do |child|
-      File.open("./memo/#{child}", 'r') do |f|
-        file_content = f.readline.split(/(",")/)
-        memo_all.push([File.basename(child, '.*'), file_content[0].gsub(/^"/, '')])
-      end
-    end
-    memo_all
+    sql = 'SELECT id, title FROM Memo'
+    Memo.read_connection.exec(sql).values
+  end
+
+  def self.create_table
+    sql = "CREATE TABLE IF NOT EXISTS Memo
+          (id     CHAR(4)    NOT NULL,
+          title   TEXT,
+          content TEXT,
+          PRIMARY KEY (id));"
+    Memo.read_connection.exec(sql)
   end
 end

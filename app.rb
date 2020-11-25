@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'readline'
 require 'csv'
+require 'pg'
 require './memo.rb'
 
 get '/' do
@@ -21,7 +22,7 @@ end
 
 post '/memo' do
   memo = Memo.new
-  memo.write(params[:title], params[:content])
+  memo.insert(params[:title], params[:content])
   p '保存しました'
 end
 
@@ -51,6 +52,6 @@ end
 
 patch '/memo/:id' do
   memo = Memo.new(params[:id])
-  memo.write(params[:title], params[:content])
+  memo.update(params[:title], params[:content])
   p '変更しました'
 end
