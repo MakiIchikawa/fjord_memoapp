@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'readline'
-require 'csv'
+
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+end
 
 get '/' do
   redirect to('/top')
@@ -11,59 +15,62 @@ end
 get '/top' do
   @title = 'top|memoapp'
   memo = []
-  Dir.children('./memo').sort.each do |f|
-    file = File.open("./memo/#{f}", 'r')
-    file_content = file.readline.split(/(",")/)
-    memo.push([File.basename(f, '.*'), file_content[0].gsub(/^"/, '')])
+  Dir.children('./memos').sort.each do |f|
+    file = File.open("./memos/#{f}", 'r')
+    file_content = file.read.split(/(, )/)
+    memo.push([File.basename(f, '.*'), file_content[0]])
     file.close
   end
   @memo = memo
   erb :top
 end
 
-get '/memo' do
+get '/memos' do
   erb :new
 end
 
-post '/memo' do
+post '/memos' do
   max_number = 0
-  Dir.each_child('./memo') do |f|
+  Dir.each_child('./memos') do |f|
     number = File.basename(f, '.*').to_i
     max_number = number > max_number ? number : max_number
   end
-  File.open("./memo/#{max_number + 1}.txt", 'w') do |f|
-    f.print("\"#{params[:title]}\",\"#{params[:content]}\"")
+  File.open("./memos/#{max_number + 1}.txt", 'w') do |f|
+    f.print(h(params[:title]) + ', ' + h(params[:content]))
   end
-  p '保存しました'
+  logger.info 'create new'
+  redirect to('/top')
 end
 
-get '/memo/:id' do
+get '/memos/:id' do
   @memo_id = params[:id]
-  file = File.open("./memo/#{params[:id]}.txt")
-  p file_content = file.read.split(/(",")/)
+  file = File.open("./memos/#{params[:id]}.txt")
+  file_content = file.read.split(/(, )/)
   file.close
-  @memo_title = file_content[0].gsub(/^"/, '')
-  @memo_content = file_content[2].gsub(/"$/, '').gsub(/\R/, '<br>')
+  @memo_title = file_content[0]
+  @memo_content = file_content[2]
   erb :show
 end
 
-delete '/memo/:id' do
-  File.delete("./memo/#{params[:id]}.txt")
-  p '削除しました'
+delete '/memos/:id' do
+  File.delete("./memos/#{params[:id]}.txt")
+  logger.info 'delete'
+  redirect to('/top')
 end
 
 get '/edit/:id' do
   @memo_id = params[:id]
-  file = File.read("./memo/#{params[:id]}.txt")
-  file_content = file.split(/(",")/)
-  @memo_title = file_content[0].gsub(/^"/, '')
-  @memo_content = file_content[2].gsub(/"$/, '').gsub(/\R/, '&#13;')
+  file = File.read("./memos/#{params[:id]}.txt")
+  file_content = file.split(/(, )/)
+  @memo_title = file_content[0]
+  @memo_content = file_content[2]
   erb :edit
 end
 
-patch '/memo/:id' do
-  File.open("./memo/#{params[:id]}.txt", 'w') do |f|
-    f.print("\"#{params[:title]}\",\"#{params[:content]}\"")
+patch '/memos/:id' do
+  File.open("./memos/#{params[:id]}.txt", 'w') do |f|
+    f.print(h(params[:title]) + ', ' + h(params[:content]))
   end
-  p '変更しました'
+  logger.info 'update'
+  redirect to('/top')
 end

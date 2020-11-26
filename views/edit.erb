@@ -1,11 +1,11 @@
-<form method="post" action="/memo/<%= @memo_id %>">
+<form method="post" action="/memos/<%= @memo_id %>">
   <div class="container">
     <div class="form-items">
       <div class="form-items_title">
-        <input type="text" name="title" value=<%= @memo_title %> class="form-control border-info">
+        <input type="text" name="title" value=<%= @memo_title %> class="form-control border-info title">
       </div>
       <div class="form-items_content">
-        <textarea type="text" name="content" class="form-control border-info"><%= @memo_content %></textarea>
+        <textarea type="text" name="content" class="form-control border-info content"><%= @memo_content %></textarea>
       </div>
     </div>
     <div class="form-action form-row text-center">

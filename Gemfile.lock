@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.1)
+    erubi (1.10.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     parallel (1.19.2)
@@ -38,6 +39,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  erubi
   rubocop
   sinatra
 
