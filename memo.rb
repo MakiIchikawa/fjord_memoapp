@@ -31,13 +31,11 @@ class Memo
   end
 
   def insert(title, content)
-    # shaped_content = content.gsub(/\\r\\n?/, "\n")
     sql = "INSERT INTO Memo (id, title, content) VALUES ('#{@id}', '#{title}', '#{content}');"
     Memo.read_connection.exec(sql)
   end
 
   def update(title, content)
-    # shaped_content = content.gsub(/\\r\\n?/, "\n")
     sql = "UPDATE Memo SET title='#{title}', content='#{content}' WHERE id='#{@id}';"
     Memo.read_connection.exec(sql)
   end
@@ -49,7 +47,7 @@ class Memo
 
   def self.read_all
     sql = 'SELECT id, title FROM Memo'
-    Memo.read_connection.exec(sql).values
+    Memo.read_connection.exec(sql).values.sort_by { |ary| ary[0] }
   end
 
   def self.create_table

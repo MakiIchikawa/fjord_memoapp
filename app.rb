@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'readline'
-require 'csv'
 require 'pg'
 require './memo.rb'
+
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+end
 
 get '/' do
   redirect to('/top')
@@ -16,42 +20,45 @@ get '/top' do
   erb :top
 end
 
-get '/memo' do
+get '/memos' do
   erb :new
 end
 
-post '/memo' do
+post '/memos' do
   memo = Memo.new
   memo.insert(params[:title], params[:content])
-  p '保存しました'
+  logger.info 'create new'
+  redirect to('/top')
 end
 
-get '/memo/:id' do
+get '/memos/:id' do
   @memo_id = params[:id]
   memo = Memo.new(params[:id])
-  memo_array = memo.read
+  memo_array = memo.read.flatten
   @memo_title = memo_array[0]
-  @memo_content = memo_array[1].gsub(/\R/, '<br>')
+  @memo_content = memo_array[1]
   erb :show
 end
 
-delete '/memo/:id' do
+delete '/memos/:id' do
   memo = Memo.new(params[:id])
   memo.delete
-  p '削除しました'
+  logger.info 'delete'
+  redirect to('/top')
 end
 
 get '/edit/:id' do
   @memo_id = params[:id]
   memo = Memo.new(params[:id])
-  memo_array = memo.read
+  memo_array = memo.read.flatten
   @memo_title = memo_array[0]
-  @memo_content = memo_array[1].gsub(/\R/, '&#13;')
+  @memo_content = memo_array[1]
   erb :edit
 end
 
-patch '/memo/:id' do
+patch '/memos/:id' do
   memo = Memo.new(params[:id])
   memo.update(params[:title], params[:content])
-  p '変更しました'
+  logger.info 'update'
+  redirect to('/top')
 end

@@ -1,14 +1,14 @@
 <div class="container">
   <div class="row">
     <div class="col-12 p-2">
-      <a href="../memo" class="btn-outline-info btn-lg" role="button">追加</a>
+      <a href="../memos" class="btn-outline-info btn-lg" role="button">追加</a>
     </div>
   </div>
   <div class="row">
     <div class="col-12 p-2">
       <ul class="list-group">
         <% @memo.each do |memo| %>
-        <li class="list-group-item"><a href="../memo/<%= memo[0] %>" class="text-info"><%= memo[1] %></a>
+        <li class="list-group-item"><a href="../memos/<%= memo[0] %>" class="text-info"><%= memo[1] %></a>
         </li>
         <% end %>
       </ul>
