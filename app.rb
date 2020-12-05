@@ -2,12 +2,16 @@
 
 require 'sinatra'
 require 'pg'
-require './memo.rb'
+require './memo'
 
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
   end
+end
+
+before do
+  Memo.create_table
 end
 
 get '/' do
