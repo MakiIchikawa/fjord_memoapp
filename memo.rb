@@ -10,7 +10,7 @@ class Memo
     if id
       @id = format('%04d', id)
     else
-      p memo = Memo.read_all.transpose
+      memo = Memo.read_all.transpose
       max_number = memo[0] ? memo[0].map(&:to_i).max : 0
       @id = format('%04d', max_number + 1)
     end
