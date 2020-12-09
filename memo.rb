@@ -16,7 +16,7 @@ class Memo
     end
   end
 
-  def self.exec_sql(sql, params)
+  def self.exec_sql(sql, params = nil)
     connection = PG.connect(host: ENV['PS_HOST'],
                             user: ENV['PS_USER'],
                             password: ENV['PS_PASSWORD'],
@@ -53,8 +53,7 @@ class Memo
 
   def self.read_all
     sql = 'SELECT id, title FROM Memo ORDER BY id ASC'
-    params = nil
-    Memo.exec_sql(sql, params).values { |ary| ary[0] }
+    Memo.exec_sql(sql).values { |ary| ary[0] }
   end
 
   def self.create_table
@@ -63,7 +62,6 @@ class Memo
           title   TEXT,
           content TEXT,
           PRIMARY KEY (id));"
-    params = nil
-    Memo.exec_sql(sql, params)
+    Memo.exec_sql(sql)
   end
 end
