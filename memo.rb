@@ -52,9 +52,9 @@ class Memo
   end
 
   def self.read_all
-    sql = 'SELECT id, title FROM Memo'
+    sql = 'SELECT id, title FROM Memo ORDER BY id ASC'
     params = nil
-    Memo.exec_sql(sql, params).values.sort_by { |ary| ary[0] }
+    Memo.exec_sql(sql, params).values { |ary| ary[0] }
   end
 
   def self.create_table
